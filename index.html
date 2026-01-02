@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mega Countdown</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div id="setup-screen" class="container">
+        <h1>Timer Setup</h1>
+        <div class="input-group">
+            <div class="field">
+                <label for="hours">Ore</label>
+                <input type="number" id="hours" min="0" value="0" placeholder="0">
+            </div>
+            <div class="field">
+                <label for="minutes">Minuti</label>
+                <input type="number" id="minutes" min="0" max="59" value="0" placeholder="0">
+            </div>
+        </div>
+        <button id="start-btn">Avvia</button>
+    </div>
+
+    <div id="timer-screen" class="hidden">
+        <div id="timer-display">00:00:00</div>
+        <button id="stop-btn">Ferma</button>
+    </div>
+
+    <audio id="alarm-sound" src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg"></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
