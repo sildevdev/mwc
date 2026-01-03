@@ -1,38 +1,176 @@
 <!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mega Countdown</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+<html lang="it" data-lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Work Countdown</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="loading-screen">
+      <div class="loader-content">
+        <div class="loader-percentage">0%</div>
+        <div class="loader-bar-container">
+          <div class="loader-bar"></div>
+        </div>
+        <div class="loader-text">Caricamento...</div>
+      </div>
+    </div>
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
 
+    <div class="header-controls">
+      <button id="theme-open-btn" class="header-btn">
+        <i class="fa-solid fa-palette"></i>
+        <span data-i18n="theme_menu_btn">Temi</span>
+      </button>
+      <button id="lang-open-btn" class="header-btn">
+        <i class="fa-solid fa-globe"></i>
+        <span data-i18n="lang_menu_btn">Lingua</span>
+      </button>
+      <button id="sound-toggle-btn" class="header-btn">
+        <i class="fa-solid fa-volume-high"></i>
+        <span data-i18n="sound_menu_btn">Suono</span>
+      </button>
+      <div class="animation-switch-wrapper">
+        <span class="animation-switch-label"
+          ><i class="fa-solid fa-wand-magic-sparkles"></i>
+          <span data-i18n="anim_label">Animazioni:</span></span
+        >
+        <label class="switch">
+          <input type="checkbox" id="animation-toggle" checked />
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
     <div id="setup-screen" class="container">
-        <h1>Timer Setup</h1>
-        <div class="input-group">
-            <div class="field">
-                <label for="hours">Ore</label>
-                <input type="number" id="hours" min="0" value="0" placeholder="0">
-            </div>
-            <div class="field">
-                <label for="minutes">Minuti</label>
-                <input type="number" id="minutes" min="0" max="59" value="0" placeholder="0">
-            </div>
+      <h1 data-i18n="setup_title">Timer Setup</h1>
+      <div class="input-group">
+        <div class="field">
+          <label for="hours" data-i18n="hours_label">Ore</label>
+          <input
+            type="number"
+            id="hours"
+            min="0"
+            max="100"
+            value="0"
+            placeholder="0"
+          />
         </div>
-        <button id="start-btn">Avvia</button>
+        <div class="field">
+          <label for="minutes" data-i18n="minutes_label">Minuti</label>
+          <input
+            type="number"
+            id="minutes"
+            min="0"
+            max="59"
+            value="0"
+            placeholder="0"
+          />
+        </div>
+      </div>
+      <button id="start-btn">
+        <i class="fa-solid fa-play"></i>
+        <span data-i18n="start_btn">Avvia</span>
+      </button>
     </div>
 
     <div id="timer-screen" class="hidden">
-        <div id="timer-display">00:00:00</div>
-        <button id="stop-btn">Ferma</button>
+      <button id="rotate-btn" aria-label="Ruota schermo">
+        <i class="fa-solid fa-expand"></i>
+      </button>
+      <div id="timer-display">00:00</div>
+      <button id="stop-btn">
+        <i class="fa-solid fa-stop"></i> <span data-i18n="stop_btn">Ferma</span>
+      </button>
     </div>
 
-    <audio id="alarm-sound" src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg"></audio>
+    <audio id="alarm-sound" src="sounds/timer.mp3" preload="auto"></audio>
+    <audio id="tick-sound" src="sounds/tick.mp3" preload="auto"></audio>
+
+    <!-- Modals -->
+    <div id="theme-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" tabindex="0" role="button" aria-label="Chiudi"
+          ><i class="fa-solid fa-xmark"></i
+        ></span>
+        <h2 data-i18n="modal_theme_title">Seleziona un Tema</h2>
+        <input
+          type="text"
+          id="theme-search"
+          class="search-input"
+          data-i18n-placeholder="search_placeholder"
+          placeholder="Cerca..."
+        />
+        <div class="theme-grid" id="theme-grid"></div>
+      </div>
+    </div>
+
+    <div id="lang-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" tabindex="0" role="button" aria-label="Chiudi"
+          ><i class="fa-solid fa-xmark"></i
+        ></span>
+        <h2 data-i18n="modal_lang_title">Seleziona la Lingua</h2>
+        <input
+          type="text"
+          id="lang-search"
+          class="search-input"
+          data-i18n-placeholder="search_placeholder"
+          placeholder="Cerca..."
+        />
+        <div class="theme-grid lang-list" id="lang-list"></div>
+      </div>
+    </div>
 
     <script src="script.js"></script>
-</body>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        let touchstartX = 0;
+        let touchstartY = 0;
+
+        document.body.addEventListener(
+          "touchstart",
+          (e) => {
+            touchstartX = e.changedTouches[0].screenX;
+            touchstartY = e.changedTouches[0].screenY;
+          },
+          { passive: true }
+        );
+
+        document.body.addEventListener(
+          "touchend",
+          (e) => {
+            const touchendX = e.changedTouches[0].screenX;
+            const touchendY = e.changedTouches[0].screenY;
+
+            if (document.querySelector(".modal.open")) return;
+
+            const xDiff = touchendX - touchstartX;
+            const yDiff = touchendY - touchstartY;
+
+            if (Math.abs(xDiff) > 50 && Math.abs(xDiff) > Math.abs(yDiff)) {
+              const btnSelector =
+                xDiff > 0 ? ".theme-nav-prev" : ".theme-nav-next";
+              const btn = document.querySelector(btnSelector);
+              if (btn) btn.click();
+            }
+          },
+          { passive: true }
+        );
+      });
+    </script>
+  </body>
 </html>
