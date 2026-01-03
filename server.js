@@ -2,7 +2,7 @@ const http = require("http");
 const fs = require("fs");
 const path = require("path");
 
-const PORT = 4000;
+const PORT = 2345;
 
 const mimeTypes = {
   ".html": "text/html",
@@ -60,3 +60,4 @@ server.listen(PORT, () => {
   console.log(`Server starter on port ${PORT}`);
   console.log("Press Ctrl+C to stop the process.");
 });
+
