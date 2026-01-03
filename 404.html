@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 - Pagina Non Trovata</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .error-code {
+        font-size: 6rem;
+        margin: 0;
+        line-height: 1;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        --webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
+      }
+      .error-msg {
+        font-size: 1.2rem;
+        margin: 1rem 0 2rem;
+        opacity: 0.8;
+      }
+      .ghost-icon {
+        font-size: 5rem;
+        color: var(--text-color);
+        margin-bottom: 1rem;
+        animation: float 3s ease-in-out infinite;
+        opacity: 0.8;
+      }
+      .btn-link {
+        text-decoration: none;
+      }
+      @keyframes blob-move {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        33% {
+          transform: translate(30px, -50px) scale(1.1);
+        }
+        66% {
+          transform: translate(-20px, 20px) scale(0.9);
+        }
+      }
+      .blob-1 {
+        animation: blob-move 15s infinite alternate ease-in-out;
+      }
+      .blob-2 {
+        animation: blob-move 20s infinite alternate-reverse ease-in-out;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="container">
+      <i class="fa-solid fa-ghost ghost-icon"></i>
+      <h1 class="error-code">404</h1>
+      <p class="error-msg" data-i18n="404_msg">Ops! Pagina non trovata.</p>
+      <a href="/" class="btn-link">
+        <button>
+          <i class="fa-solid fa-house"></i>
+          <span data-i18n="404_btn">Torna alla Home</span>
+        </button>
+      </a>
+    </div>
+    <script>
+      (async function () {
+        const supportedLangs = [
+          "it",
+          "en",
+          "es",
+          "fr",
+          "de",
+          "pt",
+          "ru",
+          "zh",
+          "ja",
+          "ko",
+          "ar",
+          "hi",
+          "tr",
+          "nl",
+          "pl",
+          "sv",
+          "vi",
+          "th",
+          "el",
+          "uk",
+        ];
+
+        let currentLang = localStorage.getItem("countdown_lang");
+        if (!currentLang) {
+          const browserLang = (navigator.language || "it").split("-")[0];
+          currentLang = supportedLangs.includes(browserLang)
+            ? browserLang
+            : "it";
+        }
+
+        const savedTheme = localStorage.getItem("countdown_theme");
+        if (savedTheme && savedTheme !== "default") {
+          document.body.setAttribute("data-theme", savedTheme);
+        }
+
+        try {
+          const response = await fetch(`languages/${currentLang}.json`);
+          if (response.ok) {
+            const translations = await response.json();
+            document.querySelectorAll("[data-i18n]").forEach((el) => {
+              const key = el.getAttribute("data-i18n");
+              if (translations[key]) el.textContent = translations[key];
+            });
+            document.documentElement.lang = currentLang;
+            document.documentElement.setAttribute("data-lang", currentLang);
+          }
+        } catch (e) {
+          console.error("Errore caricamento traduzioni:", e);
+        }
+      })();
+    </script>
+  </body>
+</html>
