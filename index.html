@@ -6,8 +6,10 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-
     <title>Work Countdown</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    
     <link
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600;700&display=swap"
       rel="stylesheet"
@@ -16,7 +18,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="css/styles.min.css" />
   </head>
   <body>
     <div id="loading-screen">
@@ -44,16 +46,22 @@
         <i class="fa-solid fa-volume-high"></i>
         <span data-i18n="sound_menu_btn">Suono</span>
       </button>
-      <div class="animation-switch-wrapper">
-        <span class="animation-switch-label"
-          ><i class="fa-solid fa-wand-magic-sparkles"></i>
-          <span data-i18n="anim_label">Animazioni:</span></span
-        >
-        <label class="switch">
-          <input type="checkbox" id="animation-toggle" checked />
-          <span class="slider"></span>
-        </label>
-      </div>
+      <a
+        href="/widget"
+        class="header-btn"
+        style="
+          text-decoration: none;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+        "
+      >
+        <i class="fa-solid fa-code"></i>
+        <span data-i18n="widget_menu_btn">Widget</span>
+      </a>
+      <button id="mobile-settings-btn" class="header-btn mobile-only">
+        <i class="fa-solid fa-gear"></i>
+      </button>
     </div>
 
     <div id="setup-screen" class="container">
@@ -82,7 +90,7 @@
           />
         </div>
       </div>
-      <button id="start-btn">
+      <button class="btn" id="start-btn">
         <i class="fa-solid fa-play"></i>
         <span data-i18n="start_btn">Avvia</span>
       </button>
@@ -90,17 +98,40 @@
 
     <div id="timer-screen" class="hidden">
       <div id="timer-display">00:00</div>
-      <button id="stop-btn">
-        <i class="fa-solid fa-stop"></i> <span data-i18n="stop_btn">Ferma</span>
-      </button>
+      <div
+        class="timer-controls"
+        style="
+          display: flex;
+          gap: 15px;
+          justify-content: center;
+          margin-top: 20px;
+        "
+      >
+        <button class="btn" id="pause-btn">
+          <i class="fa-solid fa-pause"></i>
+        </button>
+        <button class="btn" id="reset-btn">
+          <i class="fa-solid fa-rotate-left"></i>
+        </button>
+      </div>
     </div>
 
-    <audio id="alarm-sound" src="sounds/timer.mp3" preload="auto"></audio>
-    <audio id="tick-sound" src="sounds/tick.mp3" preload="auto"></audio>
+    <audio
+      id="alarm-sound"
+      src="assets/sounds/alarm/alarm-1.mp3"
+      preload="auto"
+    ></audio>
+    <audio
+      id="tick-sound"
+      src="assets/sounds/tick/tick-1.mp3"
+      preload="auto"
+    ></audio>
 
-    <!-- Modals -->
     <div id="theme-modal" class="modal">
       <div class="modal-content">
+        <span class="back-modal" tabindex="0" role="button"
+          ><i class="fa-solid fa-arrow-left"></i
+        ></span>
         <span class="close-modal" tabindex="0" role="button" aria-label="Chiudi"
           ><i class="fa-solid fa-xmark"></i
         ></span>
@@ -112,12 +143,133 @@
           data-i18n-placeholder="search_placeholder"
           placeholder="Cerca..."
         />
+        <div
+          class="animation-switch-wrapper"
+          style="
+            margin-bottom: 15px;
+            justify-content: space-between;
+            width: 100%;
+            box-sizing: border-box;
+          "
+        >
+          <span class="animation-switch-label"
+            ><i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span data-i18n="anim_label">Animazioni:</span></span
+          >
+          <label class="switch">
+            <input type="checkbox" id="animation-toggle" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
         <div class="theme-grid" id="theme-grid"></div>
+      </div>
+    </div>
+
+    <div id="sound-modal" class="modal">
+      <div class="modal-content">
+        <span class="back-modal" tabindex="0" role="button"
+          ><i class="fa-solid fa-arrow-left"></i
+        ></span>
+        <span class="close-modal" tabindex="0" role="button" aria-label="Chiudi"
+          ><i class="fa-solid fa-xmark"></i
+        ></span>
+        <h2 data-i18n="modal_sound_title">Impostazioni Suono</h2>
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            margin-bottom: 10px;
+            border-radius: 12px;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 15px;
+            "
+          >
+            <span data-i18n="tick_sound_label" style="font-weight: 600">
+              Tick Sound
+            </span>
+            <label class="switch">
+              <input type="checkbox" id="tick-sound-toggle" />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div
+            id="tick-volume-container"
+            class="volume-container"
+            style="display: none; margin-bottom: 20px"
+          >
+            <div class="range-wrapper">
+              <input
+                type="range"
+                id="tick-volume"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0.1"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            margin-bottom: 10px;
+            border-radius: 12px;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 15px;
+            "
+          >
+            <span data-i18n="alarm_sound_label" style="font-weight: 600">
+              Alarm Sound
+            </span>
+            <label class="switch">
+              <input type="checkbox" id="alarm-sound-toggle" />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div
+            id="alarm-volume-container"
+            class="volume-container"
+            style="display: none"
+          >
+            <div class="range-wrapper">
+              <input
+                type="range"
+                id="alarm-volume"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0.1"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <div id="lang-modal" class="modal">
       <div class="modal-content">
+        <span class="back-modal" tabindex="0" role="button"
+          ><i class="fa-solid fa-arrow-left"></i
+        ></span>
         <span class="close-modal" tabindex="0" role="button" aria-label="Chiudi"
           ><i class="fa-solid fa-xmark"></i
         ></span>
@@ -133,7 +285,46 @@
       </div>
     </div>
 
-    <script src="script.js"></script>
+    <div id="settings-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" tabindex="0" role="button"
+          ><i class="fa-solid fa-xmark"></i
+        ></span>
+        <h2 data-i18n="modal_settings_title">Impostazioni</h2>
+        <div class="settings-list">
+          <button id="settings-theme-btn" class="settings-item">
+            <span
+              ><i class="fa-solid fa-palette"></i>
+              <span data-i18n="theme_menu_btn">Temi</span></span
+            >
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+          <button id="settings-lang-btn" class="settings-item">
+            <span
+              ><i class="fa-solid fa-globe"></i>
+              <span data-i18n="lang_menu_btn">Lingua</span></span
+            >
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+          <button id="settings-sound-btn" class="settings-item">
+            <span
+              ><i class="fa-solid fa-volume-high"></i>
+              <span data-i18n="sound_menu_btn">Suono</span></span
+            >
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+          <a href="/widget" class="settings-item">
+            <span
+              ><i class="fa-solid fa-code"></i>
+              <span data-i18n="widget_menu_btn">Widget</span></span
+            >
+            <i class="fa-solid fa-chevron-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/script.min.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         let touchstartX = 0;
@@ -169,6 +360,19 @@
           { passive: true }
         );
       });
+
+      document
+        .querySelectorAll('.range-wrapper input[type="range"]')
+        .forEach((slider) => {
+          const update = () => {
+            const percent =
+              ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
+            slider.style.setProperty("--range-progress", `${percent}%`);
+          };
+
+          slider.addEventListener("input", update);
+          update();
+        });
     </script>
   </body>
 </html>

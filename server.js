@@ -26,9 +26,21 @@ const mimeTypes = {
 const server = http.createServer((req, res) => {
   console.log(`Request: ${req.url}`);
 
-  let filePath = "." + req.url;
+  let filePath = "." + req.url.split("?")[0];
   if (filePath === "./") {
     filePath = "./index.html";
+  }
+  if (filePath === "./widget") {
+    filePath = "./widget/widget.html";
+  }
+  if (filePath === "./404") {
+    filePath = "./404.html";
+  }
+  if (filePath === "./widget.min.js") {
+    filePath = "./widget/widget.min.js";
+  }
+  if (filePath === "./template/wt.html") {
+    filePath = "./widget/template/wt.html";
   }
 
   const extname = String(path.extname(filePath)).toLowerCase();
@@ -60,4 +72,3 @@ server.listen(PORT, () => {
   console.log(`Server starter on port ${PORT}`);
   console.log("Press Ctrl+C to stop the process.");
 });
-
