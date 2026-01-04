@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="it" data-lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Widget Generator - Work Countdown</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../css/styles.min.css" />
+    <style>
+      .widget-output {
+        margin-top: 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+        width: 100%;
+        max-width: 600px;
+      }
+      .widget-code {
+        width: 100%;
+        min-height: 80px;
+        overflow-y: hidden;
+        padding: 15px;
+        border-radius: 16px;
+        background: var(--bg-color);
+        border: 1px solid var(--glass-border);
+        color: var(--text-color);
+        font-family: monospace;
+        font-size: 0.9rem;
+        resize: none;
+        outline: none;
+        transition: border-color 0.3s, height 0.2s ease;
+        box-sizing: border-box;
+      }
+      .widget-code:focus {
+        border-color: var(--primary-color);
+      }
+      .copy-btn {
+        font-size: 1rem;
+        padding: 10px 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loading-screen">
+      <div class="loader-content">
+        <div class="loader-percentage">0%</div>
+        <div class="loader-bar-container">
+          <div class="loader-bar"></div>
+        </div>
+        <div class="loader-text">Caricamento...</div>
+      </div>
+    </div>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="header-controls">
+      <button id="theme-open-btn" class="header-btn">
+        <i class="fa-solid fa-palette"></i>
+        <span data-i18n="theme_menu_btn">Temi</span>
+      </button>
+      <button id="lang-open-btn" class="header-btn">
+        <i class="fa-solid fa-globe"></i>
+        <span data-i18n="lang_menu_btn">Lingua</span>
+      </button>
+      <button id="sound-toggle-btn" class="header-btn">
+        <i class="fa-solid fa-volume-high"></i>
+        <span data-i18n="sound_menu_btn">Suono</span>
+      </button>
+      <button id="mobile-settings-btn" class="header-btn mobile-only">
+        <i class="fa-solid fa-gear"></i>
+      </button>
+    </div>
+
+    <div id="setup-screen" class="container">
+      <h1 data-i18n="widget_generator_title">Widget Generator</h1>
+      <input
+        type="text"
+        id="timer-title-input"
+        class="timer-title-input"
+        data-i18n-placeholder="timer_title_placeholder"
+        placeholder="Titolo del Timer (opzionale)"
+        autocomplete="off"
+      />
+      <div class="input-group">
+        <div class="field">
+          <label for="hours" data-i18n="hours_label">Ore</label>
+          <input
+            type="number"
+            id="hours"
+            min="0"
+            max="100"
+            value="0"
+            placeholder="0"
+          />
+        </div>
+        <div class="field">
+          <label for="minutes" data-i18n="minutes_label">Minuti</label>
+          <input
+            type="number"
+            id="minutes"
+            min="0"
+            max="59"
+            value="0"
+            placeholder="0"
+          />
+        </div>
+      </div>
+
+      <div>
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+          "
+        >
+          <span
+            style="
+              font-size: 1.2rem;
+              font-weight: 600;
+              color: rgba(255, 255, 255, 0.8);
+            "
+            >Animazioni</span
+          >
+          <label class="switch">
+            <input type="checkbox" id="widget-anim-toggle" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+          "
+        >
+          <span
+            data-i18n="widget_transparent_bg"
+            style="
+              font-size: 1.2rem;
+              font-weight: 600;
+              color: rgba(255, 255, 255, 0.8);
+            "
+            >Sfondo Trasparente</span
+          >
+          <label class="switch">
+            <input type="checkbox" id="transparent-bg-toggle" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+          "
+        >
+          <span
+            data-i18n="widget_hide_buttons"
+            style="
+              font-size: 1.2rem;
+              font-weight: 600;
+              color: rgba(255, 255, 255, 0.8);
+            "
+            >Nascondi Bottoni</span
+          >
+          <label class="switch">
+            <input type="checkbox" id="hide-btn-toggle" />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+          "
+        >
+          <span
+            data-i18n="widget_auto_restart"
+            style="
+              font-size: 1.2rem;
+              font-weight: 600;
+              color: rgba(255, 255, 255, 0.8);
+            "
+            >Riavvio Automatico</span
+          >
+          <label class="switch">
+            <input type="checkbox" id="auto-restart-toggle" />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <button class="btn" id="generate-btn">
+        <i class="fa-solid fa-code"></i>
+        <span data-i18n="generate_widget_btn">Genera Widget</span>
+      </button>
+
+      <div id="widget-output" class="widget-output hidden">
+        <textarea id="widget-code" class="widget-code" readonly></textarea>
+        <button class="btn" id="copy-btn" class="btn-secondary copy-btn">
+          <i class="fa-regular fa-copy"></i>
+          <span data-i18n="copy_code_btn">Copia Codice</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="theme-modal" class="modal">
+      <div class="modal-content">
+        <span class="back-modal" tabindex="0" role="button"
+          ><i class="fa-solid fa-arrow-left"></i
+        ></span>
+        <span class="close-modal" tabindex="0" role="button"
+          ><i class="fa-solid fa-xmark"></i
+        ></span>
+        <h2 data-i18n="modal_theme_title">Seleziona un Tema</h2>
+        <input
+          type="text"
+          id="theme-search"
+          class="search-input"
+          data-i18n-placeholder="search_placeholder"
+          placeholder="Cerca..."
+        />
+        <div
+          class="animation-switch-wrapper"
+          style="
+            margin-bottom: 15px;
+            justify-content: space-between;
+            width: 100%;
+            box-sizing: border-box;
+          "
+        >
+          <span class="animation-switch-label"
+            ><i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span data-i18n="anim_label">Animazioni:</span></span
+          >
+          <label class="switch">
+            <input type="checkbox" id="animation-toggle" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="theme-grid" id="theme-grid"></div>
+      </div>
+    </div>
+
+    <div id="sound-modal" class="modal">
+      <div class="modal-content">
+        <span class="back-modal" tabindex="0" role="button"
+          ><i class="fa-solid fa-arrow-left"></i
+        ></span>
+        <span class="close-modal" tabindex="0" role="button"
+          ><i class="fa-solid fa-xmark"></i
+        ></span>
+        <h2 data-i18n="modal_sound_title">Impostazioni Suono</h2>
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            margin-bottom: 10px;
+            border-radius: 12px;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 15px;
+            "
+          >
+            <span data-i18n="tick_sound_label" style="font-weight: 600"
+              >Tick Sound</span
+            >
+            <label class="switch"
+              ><input type="checkbox" id="tick-sound-toggle" /><span
+                class="slider"
+              ></span
+            ></label>
+          </div>
+          <div
+            id="tick-volume-container"
+            class="volume-container"
+            style="display: none; margin-bottom: 20px"
+          >
+            <div class="range-wrapper">
+              <input
+                type="range"
+                id="tick-volume"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0.1"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            margin-bottom: 10px;
+            border-radius: 12px;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 15px;
+            "
+          >
+            <span data-i18n="alarm_sound_label" style="font-weight: 600"
+              >Alarm Sound</span
+            >
+            <label class="switch"
+              ><input type="checkbox" id="alarm-sound-toggle" /><span
+                class="slider"
+              ></span
+            ></label>
+          </div>
+          <div
+            id="alarm-volume-container"
+            class="volume-container"
+            style="display: none"
+          >
+            <div class="range-wrapper">
+              <input
+                type="range"
+                id="alarm-volume"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0.1"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="lang-modal" class="modal">
+      <div class="modal-content">
+        <span class="back-modal" tabindex="0" role="button"
+          ><i class="fa-solid fa-arrow-left"></i
+        ></span>
+        <span class="close-modal" tabindex="0" role="button"
+          ><i class="fa-solid fa-xmark"></i
+        ></span>
+        <h2 data-i18n="modal_lang_title">Seleziona la Lingua</h2>
+        <input
+          type="text"
+          id="lang-search"
+          class="search-input"
+          data-i18n-placeholder="search_placeholder"
+          placeholder="Cerca..."
+        />
+        <div class="theme-grid lang-list" id="lang-list"></div>
+      </div>
+    </div>
+
+    <div id="settings-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" tabindex="0" role="button"
+          ><i class="fa-solid fa-xmark"></i
+        ></span>
+        <h2 data-i18n="modal_settings_title">Impostazioni</h2>
+        <div class="settings-list">
+          <button id="settings-theme-btn" class="settings-item">
+            <span
+              ><i class="fa-solid fa-palette"></i>
+              <span data-i18n="theme_menu_btn">Temi</span></span
+            >
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+          <button id="settings-lang-btn" class="settings-item">
+            <span
+              ><i class="fa-solid fa-globe"></i>
+              <span data-i18n="lang_menu_btn">Lingua</span></span
+            >
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+          <button id="settings-sound-btn" class="settings-item">
+            <span
+              ><i class="fa-solid fa-volume-high"></i>
+              <span data-i18n="sound_menu_btn">Suono</span></span
+            >
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./widget.min.js"></script>
+    <script>
+      function autoResizeTextarea(el) {
+        el.style.height = "auto";
+        el.style.height = el.scrollHeight + "px";
+      }
+
+      const textarea = document.getElementById("widget-code");
+
+      if (textarea) {
+        autoResizeTextarea(textarea);
+        textarea.addEventListener("input", () => autoResizeTextarea(textarea));
+      }
+    </script>
+  </body>
+</html>
