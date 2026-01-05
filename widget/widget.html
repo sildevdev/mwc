@@ -119,102 +119,52 @@
         </div>
       </div>
 
-      <div>
-        <div
-          style="
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-          "
-        >
-          <span
-            style="
-              font-size: 1.2rem;
-              font-weight: 600;
-              color: rgba(255, 255, 255, 0.8);
-            "
-            >Animazioni</span
-          >
+      <div class="widget_settings_switcher">
+        <div class="widget_setting_row">
+          <span>
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span data-i18n="widget_anim_label">Animazioni</span>
+          </span>
           <label class="switch">
             <input type="checkbox" id="widget-anim-toggle" checked />
             <span class="slider"></span>
           </label>
         </div>
 
-        <div
-          style="
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-          "
-        >
-          <span
-            data-i18n="widget_transparent_bg"
-            style="
-              font-size: 1.2rem;
-              font-weight: 600;
-              color: rgba(255, 255, 255, 0.8);
-            "
-            >Sfondo Trasparente</span
-          >
+        <div class="widget_setting_row">
+          <span>
+            <i class="fa-solid fa-layer-group"></i>
+            <span data-i18n="widget_transparent_bg">Sfondo Trasparente</span>
+          </span>
           <label class="switch">
             <input type="checkbox" id="transparent-bg-toggle" checked />
             <span class="slider"></span>
           </label>
         </div>
 
-        <div
-          style="
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-          "
-        >
-          <span
-            data-i18n="widget_hide_buttons"
-            style="
-              font-size: 1.2rem;
-              font-weight: 600;
-              color: rgba(255, 255, 255, 0.8);
-            "
-            >Nascondi Bottoni</span
-          >
+        <div class="widget_setting_row">
+          <span>
+            <i class="fa-solid fa-eye-slash"></i>
+            <span data-i18n="widget_hide_buttons">Nascondi Bottoni</span>
+          </span>
           <label class="switch">
             <input type="checkbox" id="hide-btn-toggle" />
             <span class="slider"></span>
           </label>
         </div>
 
-        <div
-          style="
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-          "
-        >
-          <span
-            data-i18n="widget_auto_restart"
-            style="
-              font-size: 1.2rem;
-              font-weight: 600;
-              color: rgba(255, 255, 255, 0.8);
-            "
-            >Riavvio Automatico</span
-          >
+        <div class="widget_setting_row">
+          <span>
+            <i class="fa-solid fa-rotate"></i>
+            <span data-i18n="widget_auto_restart">Riavvio Automatico</span>
+          </span>
           <label class="switch">
             <input type="checkbox" id="auto-restart-toggle" />
             <span class="slider"></span>
           </label>
         </div>
       </div>
+
 
       <button class="btn" id="generate-btn">
         <i class="fa-solid fa-code"></i>
