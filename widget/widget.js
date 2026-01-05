@@ -421,6 +421,24 @@ function startBlobAnimation() {
   }
 }
 
+function showNotification(message) {
+  const existing = document.querySelector(".custom-notification");
+  if (existing) existing.remove();
+
+  const notif = document.createElement("div");
+  notif.className = "custom-notification";
+  notif.textContent = message;
+
+  document.body.appendChild(notif);
+
+  setTimeout(() => {
+    notif.style.animation = "slide-out-left 0.5s forwards";
+    notif.addEventListener("animationend", () => {
+      if (notif.parentNode) notif.remove();
+    });
+  }, 3000);
+}
+
 document
   .querySelectorAll('.range-wrapper input[type="range"]')
   .forEach((slider) => {
@@ -436,6 +454,12 @@ document
 document.getElementById("generate-btn").addEventListener("click", () => {
   const h = document.getElementById("hours").value;
   const m = document.getElementById("minutes").value;
+
+  if ((parseInt(h) || 0) === 0 && (parseInt(m) || 0) === 0) {
+    showNotification(t("notif_min_time"));
+    return;
+  }
+
   const titleInput = document.getElementById("timer-title-input");
   const title = titleInput ? titleInput.value : "";
   const theme = document.body.getAttribute("data-theme") || "default";
