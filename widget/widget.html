@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="it" data-lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Widget Generator - Work Countdown</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../css/styles.min.css" />
+    <style>
+      .widget-output {
+        margin-top: 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+        width: 100%;
+        max-width: 600px;
+      }
+      .widget-code {
+        width: 100%;
+        min-height: 80px;
+        overflow-y: hidden;
+        padding: 15px;
+        border-radius: 16px;
+        background: var(--bg-color);
+        border: 1px solid var(--glass-border);
+        color: var(--text-color);
+        font-family: monospace;
+        font-size: 0.9rem;
+        resize: none;
+        outline: none;
+        transition: border-color 0.3s, height 0.2s ease;
+        box-sizing: border-box;
+      }
+      .widget-code:focus {
+        border-color: var(--primary-color);
+      }
+      .copy-btn {
+        font-size: 1rem;
+        padding: 10px 20px;
+      }
+      /* Custom Select Styles */
+      .custom-select {
+        position: relative;
+        width: 100%;
+        font-family: "Fredoka", sans-serif;
+      }
+      .select-trigger {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px;
+        border-radius: 12px;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        color: var(--text-color);
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .select-trigger:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .select-options {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        right: 0;
+        background: var(--bg-color); /* Colore solido per leggibilità */
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        overflow-y: auto;
+        max-height: 250px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        z-index: 100;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
+      }
+      .select-options::-webkit-scrollbar {
+        display: none;
+      }
+      .custom-select.open .select-options {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+      .select-input {
+        flex: 1;
+        width: auto;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        color: inherit;
+        font-family: inherit;
+        font-size: inherit;
+        outline: none;
+        cursor: pointer;
+        text-align: left;
+        padding: 0;
+        margin: 0;
+      }
+      .select-input:focus {
+        background: transparent;
+      }
+      .custom-select.open .select-input {
+        cursor: text;
+      }
+      .custom-option {
+        padding: 12px 15px;
+        cursor: pointer;
+        transition: background 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--text-color);
+      }
+      .custom-option:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .custom-option.selected {
+        background: var(--primary-color);
+        color: var(--text-color);
+      }
+      .theme-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        flex-shrink: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loading-screen">
+      <div class="loader-content">
+        <div class="loader-percentage">0%</div>
+        <div class="loader-bar-container">
+          <div class="loader-bar"></div>
+        </div>
+        <div class="loader-text">Caricamento...</div>
+      </div>
+    </div>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div id="setup-screen" class="container">
+      <h1 data-i18n="widget_generator_title">Widget Generator</h1>
+      <div id="config-section">
+        <input
+          type="text"
+          id="timer-title-input"
+          class="timer-title-input"
+          data-i18n-placeholder="timer_title_placeholder"
+          placeholder="Titolo del Timer (opzionale)"
+          autocomplete="off"
+        />
+        <div class="input-group">
+          <div class="field">
+            <label for="hours" data-i18n="hours_label">Ore</label>
+            <input
+              type="number"
+              id="hours"
+              min="0"
+              max="100"
+              value="0"
+              placeholder="0"
+            />
+          </div>
+          <div class="field">
+            <label for="minutes" data-i18n="minutes_label">Minuti</label>
+            <input
+              type="number"
+              id="minutes"
+              min="0"
+              max="59"
+              value="0"
+              placeholder="0"
+            />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="widget-lang-select" data-i18n="lang_menu_btn"
+            >Lingua</label
+          >
+          <div id="widget-lang-select" class="custom-select"></div>
+        </div><br>
+        <div class="field">
+          <label for="widget-theme-select" data-i18n="theme_menu_btn"
+            >Tema</label
+          >
+          <div id="widget-theme-select" class="custom-select"></div>
+        </div>
+
+        <div class="widget_settings_switcher">
+          <div class="widget_setting_row">
+            <span>
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              <span data-i18n="widget_anim_label">Animazioni</span>
+            </span>
+            <label class="switch">
+              <input type="checkbox" id="widget-anim-toggle" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="widget_setting_row">
+            <span>
+              <i class="fa-solid fa-layer-group"></i>
+              <span data-i18n="widget_transparent_bg">Sfondo Trasparente</span>
+            </span>
+            <label class="switch">
+              <input type="checkbox" id="transparent-bg-toggle" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="widget_setting_row">
+            <span>
+              <i class="fa-solid fa-eye-slash"></i>
+              <span data-i18n="widget_hide_buttons">Nascondi Bottoni</span>
+            </span>
+            <label class="switch">
+              <input type="checkbox" id="hide-btn-toggle" />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="widget_setting_row">
+            <span>
+              <i class="fa-solid fa-rotate"></i>
+              <span data-i18n="widget_auto_restart">Riavvio Automatico</span>
+            </span>
+            <label class="switch">
+              <input type="checkbox" id="auto-restart-toggle" />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="widget_setting_row">
+            <span>
+              <i class="fa-solid fa-clock"></i>
+              <span data-i18n="tick_sound_label">Suono Ticchettio</span>
+            </span>
+            <div style="display: flex; align-items: center; gap: 10px">
+              <label class="switch">
+                <input type="checkbox" id="widget-tick-toggle" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="widget_setting_row">
+            <span>
+              <i class="fa-solid fa-bell"></i>
+              <span data-i18n="alarm_sound_label">Suono Allarme</span>
+            </span>
+            <div style="display: flex; align-items: center; gap: 10px">
+              <label class="switch">
+                <input type="checkbox" id="widget-alarm-toggle" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn" id="generate-btn">
+          <i class="fa-solid fa-code"></i>
+          <span data-i18n="generate_widget_btn">Genera Widget</span>
+        </button>
+      </div>
+
+      <div id="widget-output" class="widget-output hidden">
+        <span
+          data-i18n="preview_label"
+          style="font-size: 1.2rem; font-weight: 600"
+        >
+          Anteprima
+        </span>
+        <div
+          id="widget-preview-wrapper"
+          class="preview-wrapper"
+          style="
+            width: 100%;
+            height: 350px;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 20px;
+          "
+        >
+          <iframe
+            id="widget-preview-frame"
+            width="100%"
+            height="100%"
+            frameborder="0"
+          ></iframe>
+        </div>
+
+        <div
+          class="widget_setting_column"
+          style="width: 100%; margin-bottom: 15px"
+        >
+          <span>
+            <i class="fa-solid fa-code"></i>
+            <span data-i18n="widget_embed_method">Metodo</span>
+          </span>
+          <div class="widget-radio-group">
+            <label class="widget-radio-option">
+              <input type="radio" name="embed_method" value="iframe" checked />
+              <span data-i18n="widget_embed_iframe">iframe</span>
+            </label>
+            <label class="widget-radio-option">
+              <input type="radio" name="embed_method" value="script" />
+              <span data-i18n="widget_embed_script">Script</span>
+            </label>
+          </div>
+        </div>
+        <textarea id="widget-code" class="widget-code" readonly></textarea>
+
+        <div style="display: flex; gap: 15px; width: 100%; margin-top: 10px">
+          <button
+            id="back-to-config-btn"
+            class="btn-secondary"
+            style="
+              flex: 1;
+              font-size: 1.2rem;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 10px;
+            "
+          >
+            <i class="fa-solid fa-arrow-left"></i>
+            <span data-i18n="back_btn">Modifica</span>
+          </button>
+          <button
+            id="copy-btn"
+            class="btn"
+            style="
+              flex: 1;
+              font-size: 1.2rem;
+              padding: 15px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 10px;
+            "
+          >
+            <i class="fa-regular fa-copy"></i>
+            <span data-i18n="copy_code_btn">Copia Codice</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./widget.min.js"></script>
+    <script>
+      function autoResizeTextarea(el) {
+        el.style.height = "auto";
+        el.style.height = el.scrollHeight + "px";
+      }
+
+      const textarea = document.getElementById("widget-code");
+
+      if (textarea) {
+        autoResizeTextarea(textarea);
+        textarea.addEventListener("input", () => autoResizeTextarea(textarea));
+      }
+    </script>
+  </body>
+</html>

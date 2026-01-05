@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="it" data-lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Work Countdown Widget</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../../css/styles.css" />
+  </head>
+  <body class="widget-mode">
+    <div id="loading-screen">
+      <div class="loader-content">
+        <div class="loader-percentage">0%</div>
+        <div class="loader-bar-container">
+          <div class="loader-bar"></div>
+        </div>
+        <div class="loader-text">Caricamento...</div>
+      </div>
+    </div>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div id="setup-screen" class="container">
+      <input type="hidden" id="hours" value="0" />
+      <input type="hidden" id="minutes" value="0" />
+      <input type="hidden" id="timer-title-input" />
+      <button id="start-btn" style="display: none"></button>
+    </div>
+
+    <div id="timer-screen" class="hidden">
+      <div id="timer-title-display"></div>
+      <div id="timer-display">00:00</div>
+      <div
+        class="timer-controls"
+        style="
+          display: flex;
+          gap: 15px;
+          justify-content: center;
+          margin-top: 20px;
+        "
+      >
+        <button class="btn" id="pause-btn">
+          <i class="fa-solid fa-pause"></i>
+        </button>
+        <button class="btn" id="reset-btn">
+          <i class="fa-solid fa-rotate-left"></i>
+        </button>
+      </div>
+    </div>
+
+    <audio id="alarm-sound" preload="auto"></audio>
+    <audio id="tick-sound" preload="auto"></audio>
+
+    <div id="theme-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal"></span>
+        <div id="theme-grid"></div>
+      </div>
+    </div>
+    <div id="sound-modal" class="modal">
+      <div class="modal-content"><span class="close-modal"></span></div>
+    </div>
+    <div id="lang-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal"></span>
+        <div id="lang-list"></div>
+      </div>
+    </div>
+    <div id="settings-modal" class="modal">
+      <div class="modal-content"><span class="close-modal"></span></div>
+    </div>
+
+    <script>
+      window.APP_BASE_PATH = "../../";
+    </script>
+    <script src="../../js/script.js"></script>
+    <a
+      href="https://timer.sildev.dev"
+      target="_blank"
+      id="widget-branding"
+      class="widget-branding"
+    >
+      Made with Timer.sildev.dev
+    </a>
+  </body>
+</html>
