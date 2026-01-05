@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+        background: black;
+      }
+      iframe {
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div id="test">
+
+    </div>
+
+    <iframe src="http://localhost:2345/template/wt.html?widget=true&theme=default&lang=en&m=1&tick=false&alarm=false&tickVol=1&alarmVol=1&anim=true&bg=transparent&onFinish=testFunction%28%29" width="100%" height="600" frameborder="0" allow="autoplay; fullscreen"></iframe>
+
+    <script>
+      const t = document.getElementById('test');
+
+      function testFunction() {
+        t.innerHTML = "<h1 style='color:white;'>Time's up!</h1>";
+      }
+      
+    </script>
+  </body>
+</html>
